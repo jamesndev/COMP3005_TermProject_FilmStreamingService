@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,9 +6,15 @@ public class Main {
             Connection conn = DriverManager.getConnection("jdbc:sqlite:data/movie_streaming.db");
             System.out.println("Connected to SQLite!");
 
-            Statement stmt = conn.createStatement();
+            PreparedStatement ps = conn.prepareStatement("INSERT OR IGNORE INTO actors " +
+                    "(actor_id, first_name, last_name, birthday, nationality) " +
+                    "VALUES (200, 'Brad', 'Pitt', 1963-12-18, 'American')"
+            );
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM actors");
+            ps.executeUpdate();
+
+            PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM actors");
+            ResultSet rs = ps2.executeQuery();
 
             System.out.println("Database contents:");
             while (rs.next()) {
