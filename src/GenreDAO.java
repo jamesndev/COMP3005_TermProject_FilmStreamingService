@@ -1,18 +1,26 @@
+import java.sql.Connection;
+
 public class GenreDAO {
 
-    public void insertGenre(Model model) {
+    private Connection conn;
+
+    public GenreDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    public void insertGenre(Servicer model) {
 
     }
 
-    public void retrieveAllGenres(Model model) {
+    public void retrieveAllGenres(Servicer model) {
 
     }
 
-    public void retrieveGenreByID(Model model) {
+    public void retrieveGenreByID(Servicer model) {
 
     }
 
-    public void deleteGenre(Model model) {
+    public void deleteGenre(Servicer model) {
 
     }
 }
