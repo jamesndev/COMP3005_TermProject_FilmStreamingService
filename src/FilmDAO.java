@@ -29,7 +29,6 @@ public class FilmDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return film;
 
     }
 
