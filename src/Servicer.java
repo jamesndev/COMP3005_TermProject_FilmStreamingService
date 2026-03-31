@@ -7,13 +7,14 @@ public class Servicer {
     private List<Film> allFilms;
     private List<Film> watchedFilms;
 
-    private List<Actor> actors = new ArrayList<>();
+    private List<Actor> allActors = new ArrayList<>();
     private List<User> users = new ArrayList<>();
 
     private FilmDAO filmDAO;
     private ActorDAO actorDAO;
     private UserDAO userDAO;
     private GenreDAO genreDAO;
+    private FilmUserDAO filmUserDAO;
 
     User currentUser;
     Film currentChosenFilm;
@@ -25,8 +26,12 @@ public class Servicer {
             actorDAO = new ActorDAO(conn);
             userDAO = new UserDAO(conn);
             genreDAO = new GenreDAO(conn);
+            filmUserDAO = new FilmUserDAO(conn);
 
             allFilms = filmDAO.retrieveAllFilms();
+            watchedFilms = new ArrayList<>();
+
+            allActors = actorDAO.retrieveAllActors();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +59,15 @@ public class Servicer {
         return allFilms;
     }
 
+    public void addWatchedFilm(Film film) {
+        watchedFilms.add(film);
+    }
+
+    public void removeWatchedFilm(Film film) {
+        film.setHasBeenWatched(false);
+        watchedFilms.remove(film);
+    }
+
     public Film getFilm(int id) {
         for (Film film: allFilms) {
             if (film.getFilmId() == id) {
@@ -71,51 +85,67 @@ public class Servicer {
         this.allFilms = allFilms;
     }
 
-    public int watchFilm(Film film) {
+    public int watchFilm(Film film, User user) {
         int watchedSoFar;
-        if (film.isHasBeenWatched()) {
-            for(Film f: watchedFilms) {
-                if(f.equals(film)){
-                    film.watch();
-                }
+        if (isFilmWatchedAlready(film, user)) {
+            film.setHasBeenWatched(true);
+
+            if (!film.watch()) {
+                film.setHasBeenWatched(false);
+                filmUserDAO.updateWatchTime(film, user);
+                return -1;
             }
+
             watchedSoFar = film.getWatchedSoFar();
+
         } else {
-            for(Film f: allFilms) {
-                if(f.equals(film)){
+            film.watch();
 
-                    film.watch();
-                }
-            }
+            filmUserDAO.insertWatchedFilm(film, getCurrentUser());
+            addWatchedFilm(film);
+            film.setHasBeenWatched(true);
+
             watchedSoFar = film.getWatchedSoFar();
-
         }
+        filmUserDAO.updateWatchTime(film, user);
         return watchedSoFar;
     }
 
     public void addFilmToWatched(Film film, User user) {
-        filmDAO.insertWatchedFilm(film, user);
+        filmUserDAO.insertWatchedFilm(film, user);
     }
 
-    public List<Actor> getActors() {
-        return actors;
+    public boolean isFilmWatchedAlready(Film film, User user) {
+        return filmUserDAO.checkIfFilmWatched(film, user);
     }
 
-    public void setActors(List<Actor> actors) {
-        this.actors = actors;
+    public int getWatchAmount(Film film, User user) {
+        if(isFilmWatchedAlready(film, user)) {
+            film.setHasBeenWatched(true);
+            return filmUserDAO.getProgress(film.getFilmId(), user.getUserId());
+        }
+        return 0;
+    }
+
+    public List<Actor> getAllActors() {
+        return allActors;
+    }
+
+    public void setAllActors(List<Actor> actors) {
+        this.allActors = actors;
     }
 
     public User login(String email, String password) {
         currentUser = userDAO.retrieveUserByUsername(email);
 
         if (currentUser == null) {
-            return null; // user doesn't exist
+            return null;
         }
 
         if (!currentUser.getPassword().equals(password)) {
-            return null; // wrong password
+            return null;
         }
 
-        return currentUser; // success
+        return currentUser;
     }
 }

@@ -1,14 +1,76 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Actor {
-    private String first_name;
-    private String last_name;
+    private int actorId;
+    private String firstName;
+    private String lastName;
     private String birthday;
     private String nationality;
 
-    public Actor(String first_name, String last_name, String birthday, String nationality) {
-        this.first_name = first_name;
-        this.last_name = last_name;
+    private List<Film> filmsIn;
+
+    public Actor(int actorId, String firstName, String lastName, String birthday, String nationality) {
+        this.actorId = actorId;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.birthday = birthday;
         this.nationality = nationality;
+
+        filmsIn = new ArrayList<>();
+    }
+
+    public Actor() {
+
+    }
+
+    public List<Film> getFilmsIn() {
+        return filmsIn;
+    }
+
+    public int getActorId() {
+        return actorId;
+    }
+
+    public void setActorId(int actorId) {
+        this.actorId = actorId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    @Override
+    public String toString() {
+        return actorId + ", " + firstName + ", " + lastName + ", Dr. " + birthday + ", " + nationality;
     }
 
 

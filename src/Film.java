@@ -1,4 +1,6 @@
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Film {
@@ -13,6 +15,8 @@ public class Film {
     private boolean hasBeenWatched = false;
     private int watchedSoFar = 0;
 
+    private List<Actor> actors;
+
     public Film(int filmId, String title, String director, int runtime, String releaseDate, String rating) {
         this.filmId = filmId;
         this.title = title;
@@ -20,6 +24,8 @@ public class Film {
         this.runtime = runtime;
         this.releaseDate = releaseDate;
         this.rating = rating;
+
+        actors = new ArrayList<>();
     }
 
     public Film() {
@@ -84,6 +90,10 @@ public class Film {
         return watchedSoFar;
     }
 
+    public void setWatchedSoFar(int watchedSoFar) {
+        this.watchedSoFar = watchedSoFar;
+    }
+
     public String displayDetailedFilmInfo() {
         StringBuilder sb = new StringBuilder();
 
@@ -97,6 +107,11 @@ public class Film {
         sb.append("\n");
         sb.append("Rated " + rating);
         sb.append("\n");
+
+        if(hasBeenWatched) {
+            sb.append(runtime - watchedSoFar + " minutes remaining");
+            sb.append("\n");
+        }
 
         return sb.toString();
     }
