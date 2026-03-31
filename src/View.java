@@ -74,7 +74,6 @@ public class View extends JFrame {
 
             watchedOrBrowseMenu();
         }
-
     }
 
     private void registerMenu() {
@@ -111,8 +110,9 @@ public class View extends JFrame {
             System.out.println();
             System.out.println("---------------------------------");
             System.out.println("1) Browse movies");
-            System.out.println("2) Recently Watched");
-            System.out.println("3) Exit");
+            System.out.println("2) Browse actors");
+            System.out.println("3) Recently Watched");
+            System.out.println("4) Exit");
             System.out.println("---------------------------------");
             System.out.print("Enter choice: ");
 
@@ -121,25 +121,66 @@ public class View extends JFrame {
 
             switch (watchedOrBrowseMenuChoice) {
                 case 1 -> browseMoviesMenu();
-                case 2 -> recentlyWatchedMenu();
-                case 3 -> exit();
+                case 3 -> recentlyWatchedMenu();
+                case 4 -> exit();
                 default -> System.out.println("Invalid choice.");
             }
         }
     }
 
     public void browseMoviesMenu() {
+        while(true) {
+            System.out.println();
+            System.out.println("=================================");
+            System.out.println("        CHOOSE A FILM");
+            System.out.println("=================================");
+            Film chosenFilm;
+            for(Film film: servicer.getAllFilms()) {
+                System.out.println(film.toString());
+            }
+            System.out.print("Choose film by id:");
+            int filmChoice = scanner.nextInt();
 
+            System.out.print("\n");
 
+            individualFilmMenu(servicer.getFilm(filmChoice));
+
+        }
+    }
+
+    public void individualFilmMenu(Film film) {
+        while(true) {
+            System.out.println();
+            System.out.println("=================================");
+            System.out.println("       " + film.getTitle() + "       ");
+            System.out.println("=================================");
+            film.displayDetailedFilmInfo();
+
+            System.out.println("1) Watch movie");
+            System.out.println("2) View actors");
+            System.out.println("3) Back");
+
+            int individualFilmMenuChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (individualFilmMenuChoice) {
+                case 1 -> watchMovie(film);
+                case 2 -> recentlyWatchedMenu();
+                case 3 -> {
+                    return;
+                }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    public void watchMovie(Film film) {
+        System.out.println("Watching movie...");
+        System.out.println("You watched " + servicer.watchFilm(film) + " minutes");
     }
 
     public void recentlyWatchedMenu() {
-
     }
-
-
-
-
 
     private void exit() {
         System.out.println("Exiting the Film Streaming Service!");
