@@ -13,8 +13,6 @@ public class FilmDAO {
         this.conn = conn;
     }
 
-
-
     public List<Film> retrieveAllFilms() {
         List<Film> films = new ArrayList<>();
 
@@ -43,7 +41,7 @@ public class FilmDAO {
     public Film retrieveFilmByID(int filmId) {
 
         Film film = new Film();
-        String query = "SELECT * FROM films where id = " + filmId;
+        String query = "SELECT * FROM films where film_id = " + filmId;
 
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {

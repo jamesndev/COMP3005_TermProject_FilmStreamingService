@@ -8,7 +8,7 @@ public class Servicer {
     private List<Film> watchedFilms;
 
     private List<Actor> allActors = new ArrayList<>();
-    private List<User> users = new ArrayList<>();
+    private List<User> allUsers = new ArrayList<>();
 
     private FilmDAO filmDAO;
     private ActorDAO actorDAO;
@@ -33,6 +33,8 @@ public class Servicer {
 
             allActors = actorDAO.retrieveAllActors();
 
+            allUsers = userDAO.retrieveAllUsers();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,6 +57,14 @@ public class Servicer {
         return true;
     }
 
+    public void setUserWatchedFilms() {
+        filmUserDAO.getWatchedFilms(currentUser.getUserId());
+    }
+
+    public boolean findFilmById(int filmId) {
+        return currentUser.findFilmById(filmId);
+    }
+
     public List<Film> getAllFilms() {
         return allFilms;
     }
@@ -75,6 +85,24 @@ public class Servicer {
             }
         }
         return null;
+    }
+
+    public List<Film> getWatchedFilms(User user) {
+        /*
+        List<Film> watched = new ArrayList<>();
+
+        List<Integer> filmIds = filmUserDAO.getWatchedFilmIds(user.getUserId());
+
+        for (int id : filmIds) {
+            Film film = getFilmById(id);
+            if (film != null) {
+                watched.add(film);
+            }
+        }
+
+        */
+
+        return filmUserDAO.getWatchedFilms(currentUser.getUserId());
     }
 
     public Film getFilmById(int id) {
@@ -100,7 +128,7 @@ public class Servicer {
 
         } else {
             film.watch();
-
+            user.addWatchedFilm(film);
             filmUserDAO.insertWatchedFilm(film, getCurrentUser());
             addWatchedFilm(film);
             film.setHasBeenWatched(true);
@@ -127,6 +155,16 @@ public class Servicer {
         return 0;
     }
 
+    public String displayFilmsForAUser() {
+        StringBuilder sb = new StringBuilder();
+
+        for (Film watchedFilm: currentUser.getWatchedFilms()) {
+            sb.append(watchedFilm.toString());
+        }
+
+        return sb.toString();
+    }
+
     public List<Actor> getAllActors() {
         return allActors;
     }
@@ -136,7 +174,7 @@ public class Servicer {
     }
 
     public User login(String email, String password) {
-        currentUser = userDAO.retrieveUserByUsername(email);
+        currentUser = userDAO.retrieveUserByEmail(email);
 
         if (currentUser == null) {
             return null;

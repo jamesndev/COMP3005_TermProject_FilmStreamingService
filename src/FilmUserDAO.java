@@ -3,6 +3,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FilmUserDAO {
 
@@ -20,13 +22,12 @@ public class FilmUserDAO {
             ps.setInt(2, user.getUserId());
 
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true if record exists
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-
 
     public void insertWatchedFilm(Film film, User user) {
 
@@ -47,6 +48,32 @@ public class FilmUserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Film> getWatchedFilms(int userId) {
+        List<Film> watchedFilms = new ArrayList<>();
+
+        String query = "SELECT film_id FROM film_user WHERE user_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Film film = new Film();
+                film.setFilmId(rs.getInt("film_id"));
+                film.setTitle(rs.getString("title"));
+                film.setDirector(rs.getString("director"));
+                film.setRuntime(rs.getInt("runtime"));
+                film.setReleaseDate(rs.getString("release_date"));
+                film.setRating(rs.getString("rating"));
+                watchedFilms.add(film);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return watchedFilms;
     }
 
     public int getProgress(int filmId, int userId) {

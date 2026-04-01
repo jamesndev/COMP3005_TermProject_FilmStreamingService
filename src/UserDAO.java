@@ -44,7 +44,7 @@ public class UserDAO {
         }
     }
 
-    public User retrieveUserByUsername(String email) {
+    public User retrieveUserByEmail(String email) {
         List<Film> users = new ArrayList<>();
 
         String query = "SELECT * FROM users WHERE email = '" + email + "'";
@@ -69,9 +69,31 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
+    }
 
+    public List<User> retrieveAllUsers() {
+        List<User> users = new ArrayList<>();
+
+        String query = "SELECT * FROM users";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+
+                user.setUserId(rs.getInt("user_id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setEmail(rs.getString("email"));
+                user.setSubscriptionId(rs.getInt("subscription_id"));
+
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     public void updateUser(Servicer model) {

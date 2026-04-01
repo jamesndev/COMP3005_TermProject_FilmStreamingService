@@ -70,7 +70,7 @@ public class Actor {
 
     @Override
     public String toString() {
-        return actorId + ", " + firstName + ", " + lastName + ", Dr. " + birthday + ", " + nationality;
+        return actorId + ", " + firstName + ", " + lastName + ", " + birthday + ", " + nationality;
     }
 
 
