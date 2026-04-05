@@ -50,7 +50,7 @@ public class FilmUserDAO {
         }
     }
 
-    public List<Film> getWatchedFilms(int userId) {
+    public List<Film> getWatchedFilms(int userId, FilmDAO filmDAO) {
         List<Film> watchedFilms = new ArrayList<>();
 
         String query = "SELECT film_id FROM film_user WHERE user_id = ?";
@@ -60,14 +60,13 @@ public class FilmUserDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Film film = new Film();
-                film.setFilmId(rs.getInt("film_id"));
-                film.setTitle(rs.getString("title"));
-                film.setDirector(rs.getString("director"));
-                film.setRuntime(rs.getInt("runtime"));
-                film.setReleaseDate(rs.getString("release_date"));
-                film.setRating(rs.getString("rating"));
-                watchedFilms.add(film);
+                int filmId = rs.getInt("film_id");
+
+                Film film = filmDAO.retrieveFilmByID(filmId);
+
+                if (film != null) {
+                    watchedFilms.add(film);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,5 +104,28 @@ public class FilmUserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean deleteWatchedFilm(Film film, User user) {
+
+        String query = """
+        DELETE FROM film_user
+        WHERE film_id = ? AND user_id = ?
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, film.getFilmId());
+            ps.setInt(2, user.getUserId());
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

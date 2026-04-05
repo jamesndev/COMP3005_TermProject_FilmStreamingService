@@ -24,10 +24,6 @@ public class Actor {
 
     }
 
-    public List<Film> getFilmsIn() {
-        return filmsIn;
-    }
-
     public int getActorId() {
         return actorId;
     }
@@ -66,6 +62,14 @@ public class Actor {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    public List<Film> getFilmsIn() {
+        return filmsIn;
+    }
+
+    public void setFilmsIn(List<Film> filmsIn) {
+        this.filmsIn = filmsIn;
     }
 
     @Override

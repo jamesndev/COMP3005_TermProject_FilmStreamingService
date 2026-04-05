@@ -41,11 +41,23 @@ public class ActorDAO {
         return actors;
     }
 
-    public void retrieveActorByID(Servicer model) {
+    public Actor retrieveActorByID(int actorId) {
 
-    }
+        Actor actor = new Actor();
+        String query = "SELECT * FROM actors where actor_id = " + actorId;
 
-    public void deleteActor(Servicer model) {
-
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                actor.setActorId(rs.getInt("actor_id"));
+                actor.setFirstName(rs.getString("first_name"));
+                actor.setLastName(rs.getString("last_name"));
+                actor.setBirthday(rs.getString("birthday"));
+                actor.setNationality(rs.getString("nationality"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return actor;
     }
 }
