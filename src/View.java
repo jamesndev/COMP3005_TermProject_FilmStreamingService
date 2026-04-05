@@ -140,6 +140,7 @@ public class View extends JFrame {
             }
             System.out.print("Choose film by id (or go back == 0):");
             int filmChoice = scanner.nextInt();
+            scanner.nextLine();
 
             if(filmChoice == 0) {
                 break;
@@ -153,11 +154,43 @@ public class View extends JFrame {
             System.out.print("\n");
 
             individualFilmMenu(servicer.getFilm(filmChoice));
-
         }
     }
 
     public void individualFilmMenu(Film film) {
+        while(true) {
+            System.out.println();
+            System.out.println("=================================");
+            System.out.println("       " + film.getTitle() + "       ");
+            System.out.println("=================================");
+            int progress = servicer.getWatchAmount(film, servicer.getCurrentUser());
+
+            if (progress > 0) {
+                film.setHasBeenWatched(true);
+                film.setWatchedSoFar(progress);
+            }
+            System.out.println(film.displayDetailedFilmInfo());
+
+            System.out.println("1) Watch movie");
+            System.out.println("2) View cast");
+            System.out.println("3) Back");
+
+            int individualFilmMenuChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (individualFilmMenuChoice) {
+                case 1 -> watchMovie(film);
+                case 2 -> browseCastForAFilmMenu(film);
+                case 3 -> {
+                    servicer.loadAllWatchedFilmsPerUser();
+                    return;
+                }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    public void individualWatchedFilmMenu(Film film) {
         while(true) {
             System.out.println();
             System.out.println("=================================");
@@ -180,12 +213,14 @@ public class View extends JFrame {
 
             switch (individualFilmMenuChoice) {
                 case 1 -> watchMovie(film);
-                case 2 -> recentlyWatchedMenu();
+                case 2 -> browseCastForAFilmMenu(film);
                 case 3 -> {
+                    servicer.loadAllWatchedFilmsPerUser();
                     return;
                 }
                 default -> System.out.println("Invalid choice.");
             }
+            servicer.loadAllWatchedFilmsPerUser();
         }
     }
 
@@ -195,14 +230,44 @@ public class View extends JFrame {
             System.out.println("=================================");
             System.out.println("        CHOOSE AN ACTOR");
             System.out.println("=================================");
+            int actorCount = 0;
             for(Actor actor: servicer.getAllActors()) {
+                actorCount++;
                 System.out.println(actor.toString());
             }
-            System.out.print("Choose actor by id:");
+            System.out.print("Choose actor by id  (or go back == 0):");
             int actorChoice = scanner.nextInt();
+            scanner.nextLine();
 
-            System.out.print("\n");
+            if(actorChoice == 0) {
+                break;
+            }
 
+            if(actorChoice > actorCount || actorChoice < 0) {
+                System.out.println("\nInvalid input! Try again.");
+                continue;
+            }
+
+            individualActorMenu(servicer.getActor(actorChoice));
+        }
+    }
+
+    public void browseCastForAFilmMenu(Film film) {
+        while(true) {
+            System.out.println();
+            System.out.println("=================================");
+            System.out.println("    CAST OF " + film.getTitle());
+            System.out.println("=================================");
+            System.out.println(servicer.displayActorsForAFilm(film.getFilmId()));
+            System.out.print("Press 0 to go back:");
+            int actorChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            if(actorChoice == 0) {
+                break;
+            } else {
+                System.out.println("\nInvalid input! Try again.");
+            }
         }
     }
 
@@ -212,20 +277,16 @@ public class View extends JFrame {
             System.out.println("=================================");
             System.out.println(" " + actor.getFirstName() + " " + actor.getLastName());
             System.out.println("=================================");
-            //int progress = servicer.getWatchAmount(actor, servicer.getCurrentUser());
 
-
-            System.out.println("1) Watch movie");
-            System.out.println("2) View actors");
-            System.out.println("3) Back");
+            System.out.println("1) View Movies");
+            System.out.println("2) Back");
 
             int individualFilmMenuChoice = scanner.nextInt();
             scanner.nextLine();
 
             switch (individualFilmMenuChoice) {
-                //case 1 -> watchMovie(film);
-                case 2 -> recentlyWatchedMenu();
-                case 3 -> {
+                case 1 -> browseActorFilms(actor.getActorId());
+                case 2 -> {
                     return;
                 }
                 default -> System.out.println("Invalid choice.");
@@ -233,41 +294,66 @@ public class View extends JFrame {
         }
     }
 
+    public void browseActorFilms(int actorId) {
+        while(true) {
+            for(Film film: servicer.getActor(actorId).getFilmsIn()) {
+                System.out.println(film.toString());
+            }
+
+            System.out.print("Choose actor by id (or go back == 0):");
+            int filmChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            if(filmChoice == 0) {
+                break;
+            }
+
+            Film actorFilm = servicer.getFilm(filmChoice);
+
+            if (actorFilm == null) {
+                System.out.println("Invalid choice. Try again.");
+                continue;
+            }
+            System.out.print("\n");
+            individualFilmMenu(actorFilm);
+        }
+    }
+
     public void recentlyWatchedMenu() {
         while(true) {
             System.out.println();
             System.out.println("=================================");
-            System.out.println("        CHOOSE A FILM");
+            System.out.println("        RECENTLY WATCHED");
             System.out.println("=================================");
 
-            List<Film> watched = servicer.getWatchedFilms(servicer.getCurrentUser());
+            List<Film> watched = servicer.getCurrentUser().getWatchedFilms();
 
             if (watched.isEmpty()) {
                 System.out.println("No watched films yet.");
                 return;
             }
 
-            for (Film film : watched) {
+            for(Film film: watched) {
                 int progress = servicer.getWatchAmount(film, servicer.getCurrentUser());
-                System.out.println(film.getFilmId() + ") " + film.getTitle() + " (" + progress + " min watched)");
+                System.out.println(film.displayWatchedFilmInfo(progress));
             }
 
             System.out.print("Choose film by id (or go back == 0):");
             int filmChoice = scanner.nextInt();
+            scanner.nextLine();
 
             if(filmChoice == 0) {
                 break;
             }
 
-            if (!servicer.findFilmById(filmChoice)) {
-                System.out.print("Invalid choice. Try again.");
+            if (!servicer.findWatchedFilmById(filmChoice)) {
+                System.out.println("Invalid choice. Try again.");
                 continue;
             }
 
             System.out.print("\n");
-            individualFilmMenu(servicer.getFilm(filmChoice));
+            individualWatchedFilmMenu(servicer.getFilm(filmChoice));
         }
-
     }
 
     public void watchMovie(Film film) {
@@ -275,13 +361,15 @@ public class View extends JFrame {
         int amountWatched = servicer.watchFilm(film, servicer.getCurrentUser());
         if(amountWatched < 0) {
             System.out.println("You completed the film.");
-            servicer.removeWatchedFilm(film);
+            servicer.getCurrentUser().removeWatchedFilm(film);
+            servicer.deleteWatchedFilm(film.getFilmId());
+            servicer.loadWatchedFilmsForCurrentUser();
             return;
         }
+
         System.out.println("You watched " + amountWatched + " minutes");
+        servicer.loadWatchedFilmsForCurrentUser();
     }
-
-
 
     private void exit() {
         System.out.println("Exiting the Film Streaming Service!");
@@ -294,8 +382,5 @@ public class View extends JFrame {
         View view = new View(scanner, servicer);
 
         view.showMainMenu();
-
     }
-
-
 }
