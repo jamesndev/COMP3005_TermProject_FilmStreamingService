@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Servicer {
     private List<Film> allFilms;
-    private List<Film> watchedFilms;
+    //private List<Film> watchedFilms;
 
     private List<Actor> allActors = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
@@ -15,9 +15,9 @@ public class Servicer {
     private UserDAO userDAO;
     private GenreDAO genreDAO;
     private FilmUserDAO filmUserDAO;
+    private FilmActorDAO filmActorDAO;
 
     User currentUser;
-    Film currentChosenFilm;
 
     public Servicer() {
         try {
@@ -27,16 +27,55 @@ public class Servicer {
             userDAO = new UserDAO(conn);
             genreDAO = new GenreDAO(conn);
             filmUserDAO = new FilmUserDAO(conn);
+            filmActorDAO = new FilmActorDAO(conn);
 
-            allFilms = filmDAO.retrieveAllFilms();
-            watchedFilms = new ArrayList<>();
-
-            allActors = actorDAO.retrieveAllActors();
-
-            allUsers = userDAO.retrieveAllUsers();
+            loadAllFilms();
+            loadAllActors();
+            loadAllUsers();
+            loadAllWatchedFilmsPerUser();
+            loadAllFilmsForActor();
+            loadCastsForFilm();
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadAllFilms() {
+        allFilms = filmDAO.retrieveAllFilms();
+    }
+
+    public void loadAllActors() {
+        allActors = actorDAO.retrieveAllActors();
+    }
+
+    public void loadAllUsers() {
+        allUsers = userDAO.retrieveAllUsers();
+    }
+
+    public void loadAllWatchedFilmsPerUser() {
+        for(User user: allUsers) {
+            user.setWatchedFilms(filmUserDAO.getWatchedFilms(user.getUserId(), filmDAO));
+        }
+    }
+
+    public void loadWatchedFilmsForCurrentUser() {
+        currentUser.setWatchedFilms(
+                filmUserDAO.getWatchedFilms(currentUser.getUserId(), filmDAO)
+        );
+    }
+
+    public void loadAllFilmsForActor() {
+        for(Actor actor: allActors) {
+            actor.setFilmsIn(filmActorDAO.retreiveFilmsForAnActor(actor.getActorId(), filmDAO));
+        }
+    }
+
+    public void loadCastsForFilm() {
+        List<Actor> cast;
+        for(Film f: allFilms) {
+            cast = filmActorDAO.retreiveActorsForAFilm(f.getFilmId(), actorDAO);
+            f.setActors(cast);
         }
     }
 
@@ -58,17 +97,27 @@ public class Servicer {
     }
 
     public void setUserWatchedFilms() {
-        filmUserDAO.getWatchedFilms(currentUser.getUserId());
+        filmUserDAO.getWatchedFilms(currentUser.getUserId(), filmDAO);
     }
 
-    public boolean findFilmById(int filmId) {
-        return currentUser.findFilmById(filmId);
+    public Film findFilmById(int filmId) {
+        for(Film film: allFilms) {
+            if(film.getFilmId() == filmId) {
+                return film;
+            }
+        }
+        return null;
+    }
+
+    public boolean findWatchedFilmById(int filmId) {
+        return currentUser.findWatchedFilmById(filmId);
     }
 
     public List<Film> getAllFilms() {
         return allFilms;
     }
 
+    /*
     public void addWatchedFilm(Film film) {
         watchedFilms.add(film);
     }
@@ -77,6 +126,8 @@ public class Servicer {
         film.setHasBeenWatched(false);
         watchedFilms.remove(film);
     }
+    */
+
 
     public Film getFilm(int id) {
         for (Film film: allFilms) {
@@ -85,24 +136,6 @@ public class Servicer {
             }
         }
         return null;
-    }
-
-    public List<Film> getWatchedFilms(User user) {
-        /*
-        List<Film> watched = new ArrayList<>();
-
-        List<Integer> filmIds = filmUserDAO.getWatchedFilmIds(user.getUserId());
-
-        for (int id : filmIds) {
-            Film film = getFilmById(id);
-            if (film != null) {
-                watched.add(film);
-            }
-        }
-
-        */
-
-        return filmUserDAO.getWatchedFilms(currentUser.getUserId());
     }
 
     public Film getFilmById(int id) {
@@ -117,7 +150,6 @@ public class Servicer {
         int watchedSoFar;
         if (isFilmWatchedAlready(film, user)) {
             film.setHasBeenWatched(true);
-
             if (!film.watch()) {
                 film.setHasBeenWatched(false);
                 filmUserDAO.updateWatchTime(film, user);
@@ -128,9 +160,8 @@ public class Servicer {
 
         } else {
             film.watch();
-            user.addWatchedFilm(film);
             filmUserDAO.insertWatchedFilm(film, getCurrentUser());
-            addWatchedFilm(film);
+            currentUser.addWatchedFilm(film);
             film.setHasBeenWatched(true);
 
             watchedSoFar = film.getWatchedSoFar();
@@ -155,6 +186,7 @@ public class Servicer {
         return 0;
     }
 
+
     public String displayFilmsForAUser() {
         StringBuilder sb = new StringBuilder();
 
@@ -165,6 +197,10 @@ public class Servicer {
         return sb.toString();
     }
 
+    public void deleteWatchedFilm(int filmId) {
+        filmUserDAO.deleteWatchedFilm(currentUser.getWatchedFilmById(filmId), currentUser);
+    }
+
     public List<Actor> getAllActors() {
         return allActors;
     }
@@ -173,17 +209,46 @@ public class Servicer {
         this.allActors = actors;
     }
 
+    public Actor getActor(int id) {
+        for (Actor actor: allActors) {
+            if (actor.getActorId() == id) {
+                return actor;
+            }
+        }
+        return null;
+    }
+
+    public Actor getActorById(int id) {
+        return actorDAO.retrieveActorByID(id);
+    }
+
+    public String displayActorsForAFilm(int filmId) {
+        StringBuilder sb = new StringBuilder();
+
+        for (Actor actor: getFilm(filmId).getActors()) {
+            sb.append(actor.toString());
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+
+
     public User login(String email, String password) {
         currentUser = userDAO.retrieveUserByEmail(email);
 
-        if (currentUser == null) {
-            return null;
-        }
+        if (currentUser == null) return null;
+        if (!currentUser.getPassword().equals(password)) return null;
 
-        if (!currentUser.getPassword().equals(password)) {
-            return null;
-        }
+        currentUser.setWatchedFilms(
+                filmUserDAO.getWatchedFilms(currentUser.getUserId(), filmDAO)
+        );
 
         return currentUser;
+    }
+
+    public List<User> getAllUsers() {
+        return allUsers;
     }
 }
