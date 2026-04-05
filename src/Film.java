@@ -99,8 +99,6 @@ public class Film {
 
         sb.append("Directed by: " + director);
         sb.append("\n");
-        sb.append("Directed by: " + director);
-        sb.append("\n");
         sb.append("Length: " + runtime);
         sb.append("\n");
         sb.append("Released on: " + releaseDate);
@@ -116,8 +114,29 @@ public class Film {
         return sb.toString();
     }
 
+    public String displayWatchedFilmInfo(int watchProgress) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(getFilmId() + ") " + getTitle() + " (" + watchProgress + " min watched)");
+
+        if(hasBeenWatched) {
+            sb.append(runtime - watchProgress + " minutes remaining");
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    public List<Actor> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<Actor> actors) {
+        this.actors = actors;
+    }
+
     @Override
     public String toString() {
-        return filmId + ", " + title + ", Dr. " + director + ", " + runtime + " minutes, " + rating;
+        return filmId + ", " + title + ", Dir. " + director + ", " + runtime + " minutes, " + rating;
     }
 }

@@ -38,13 +38,26 @@ public class User {
         watchedFilms.add(film);
     }
 
-    public boolean findFilmById(int filmId) {
+    public void removeWatchedFilm(Film film) {
+        watchedFilms.remove(film);
+    }
+
+    public boolean findWatchedFilmById(int filmId) {
         for (Film film: watchedFilms) {
             if (film.getFilmId() == filmId) {
                 return true;
             }
         }
         return false;
+    }
+
+    public Film getWatchedFilmById(int filmId) {
+        for (Film film: watchedFilms) {
+            if (film.getFilmId() == filmId) {
+                return film;
+            }
+        }
+        return null;
     }
 
     public int getUserId() {
