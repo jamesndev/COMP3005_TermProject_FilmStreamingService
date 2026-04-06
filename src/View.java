@@ -95,6 +95,11 @@ public class View extends JFrame {
             System.out.print("Enter a password:");
             String password = scanner.nextLine();
             System.out.print("\n");
+
+            if(servicer.seeIfUserExists(email)) {
+                System.out.println("USER ALREADY EXISTS!");
+                continue;
+            }
             User user = new User();
             user.setEmail(email);
             user.setUsername(username);

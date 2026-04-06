@@ -96,6 +96,13 @@ public class Servicer {
         return true;
     }
 
+    public boolean seeIfUserExists(String email) {
+        if(userDAO.emailExists(email)) {
+            return true;
+        }
+        return false;
+    }
+
     public void setUserWatchedFilms() {
         filmUserDAO.getWatchedFilms(currentUser.getUserId(), filmDAO);
     }

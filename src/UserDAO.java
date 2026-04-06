@@ -17,9 +17,10 @@ public class UserDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 
-            return rs.next(); // true if found
+            return rs.next();
 
         } catch (SQLException e) {
             e.printStackTrace();
