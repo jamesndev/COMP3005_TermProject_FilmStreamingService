@@ -117,7 +117,7 @@ public class Film {
     public String displayWatchedFilmInfo(int watchProgress) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(getFilmId() + ") " + getTitle() + " (" + watchProgress + " min watched)");
+        sb.append(getFilmId() + ") " + getTitle() + " | (" + watchProgress + " min watched) | ");
 
         if(hasBeenWatched) {
             sb.append(runtime - watchProgress + " minutes remaining");

@@ -7,6 +7,8 @@ public class View extends JFrame {
     Scanner scanner;
     Servicer servicer;
 
+    boolean returnedFromBrowseFilmMenu = false;
+
     public View(Scanner scanner, Servicer servicer) {
         this.scanner = scanner;
         this.servicer = servicer;
@@ -70,6 +72,11 @@ public class View extends JFrame {
             System.out.println("---------------------------------");
 
             watchedOrBrowseMenu();
+
+            if (returnedFromBrowseFilmMenu) {
+                returnedFromBrowseFilmMenu = false;
+                return;
+            }
         }
     }
 
@@ -109,7 +116,7 @@ public class View extends JFrame {
             System.out.println("1) Browse movies");
             System.out.println("2) Browse actors");
             System.out.println("3) Recently Watched");
-            System.out.println("4) Exit");
+            System.out.println("4) Main Menu");
             System.out.println("---------------------------------");
             System.out.print("Enter choice: ");
 
@@ -120,7 +127,10 @@ public class View extends JFrame {
                 case 1 -> browseMoviesMenu();
                 case 2 -> browseActorsMenu();
                 case 3 -> recentlyWatchedMenu();
-                case 4 -> exit();
+                case 4 -> {
+                    returnedFromBrowseFilmMenu = true;
+                    return;
+                }
                 default -> System.out.println("Invalid choice.");
             }
         }
