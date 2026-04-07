@@ -50,14 +50,15 @@ CREATE TABLE users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     password TEXT,
-    email TEXT UNIQUE,
-    subscription_id INT
+    email TEXT UNIQUE
 );
 
+/*
 CREATE TABLE genres (
     genre_id INTEGER PRIMARY KEY AUTOINCREMENT,
     genre_type TEXT
 );
+*/
 
 CREATE TABLE film_actor (
     film_id INT,
@@ -89,12 +90,12 @@ CREATE TABLE film_user (
     user_id INT,
     watch_date DATE, 
     progress INT,
-    user_rating TEXT,
     PRIMARY KEY (user_id, film_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (film_id) REFERENCES films(film_id) ON DELETE CASCADE
 );
 
+/*
 CREATE TABLE film_genre (
     film_id INT,
     genre_id INT,
@@ -103,5 +104,6 @@ CREATE TABLE film_genre (
     FOREIGN KEY (film_id) REFERENCES films(film_id),
     FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
+*/
 
 COMMIT;
