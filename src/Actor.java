@@ -72,6 +72,10 @@ public class Actor {
         this.filmsIn = filmsIn;
     }
 
+    public String displayActorForFilm(String character, int actor_salary) {
+        return actorId + ", " + firstName + ", " + lastName + ", " + character + ", Salary: $" + actor_salary;
+    }
+
     @Override
     public String toString() {
         return actorId + ", " + firstName + ", " + lastName + ", " + birthday + ", " + nationality;

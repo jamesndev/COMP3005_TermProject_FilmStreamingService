@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Command-line interface that provides a text-based UI that the user interacts with.
+ * Talks to the Servicer (Servicer.java) which handles business logic for the film streaming service.
+ */
 public class View extends JFrame {
 
     Scanner scanner;

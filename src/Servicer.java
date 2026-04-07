@@ -233,13 +233,16 @@ public class Servicer {
         StringBuilder sb = new StringBuilder();
 
         for (Actor actor: getFilm(filmId).getActors()) {
-            sb.append(actor.toString());
+            sb.append(actor.displayActorForFilm(filmActorDAO.getCharacter(filmId, actor.getActorId()), filmActorDAO.getActorSalary(filmId, actor.getActorId())));
             sb.append("\n");
         }
 
         return sb.toString();
     }
 
+    public int getCharacter(Film film, Actor actor) {
+        return filmUserDAO.getProgress(film.getFilmId(), actor.getActorId());
+    }
 
 
     public User login(String email, String password) {
