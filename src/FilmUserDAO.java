@@ -37,11 +37,11 @@ public class FilmUserDAO {
 
         LocalDate currentDate = LocalDate.now();
 
-        String query = "INSERT INTO film_user (film_id, user_id, watch_date, progress, user_rating) VALUES ("
+        String query = "INSERT INTO film_user (film_id, user_id, watch_date, progress) VALUES ("
                 + film.getFilmId() + ", "
                 + user.getUserId() + ", '"
                 + currentDate + "', "
-                + film.getWatchedSoFar() + ", NULL)";
+                + film.getWatchedSoFar() + ")";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(query);
