@@ -97,8 +97,20 @@ public class View extends JFrame {
             System.out.print("\n");
 
             if(servicer.seeIfUserExists(email)) {
-                System.out.println("USER ALREADY EXISTS!");
-                continue;
+                System.out.println("USER ALREADY EXISTS! - Try Again? (y/n): ");
+                String tryAgainChoice = scanner.nextLine();
+                switch (tryAgainChoice) {
+                    case "y" -> {
+                        continue;
+                    }
+                    case "n" -> {
+                        return;
+                    }
+                    default -> {
+                        System.out.println("Invalid input");
+                        return;
+                    }
+                }
             }
             User user = new User();
             user.setEmail(email);
@@ -110,7 +122,6 @@ public class View extends JFrame {
                 break;
             }
             System.out.println("REGISTRATION UNSUCCESSFUL");
-
         }
     }
 
@@ -153,7 +164,7 @@ public class View extends JFrame {
                 filmCount++;
                 System.out.println(film.toString());
             }
-            System.out.print("Choose film by id (or go back == 0):");
+            System.out.print("Choose film by id or enter 0 to go back:");
             int filmChoice = scanner.nextInt();
             scanner.nextLine();
 
@@ -250,7 +261,7 @@ public class View extends JFrame {
                 actorCount++;
                 System.out.println(actor.toString());
             }
-            System.out.print("Choose actor by id  (or go back == 0):");
+            System.out.print("Choose actor by id or enter 0 to go back:");
             int actorChoice = scanner.nextInt();
             scanner.nextLine();
 
@@ -274,7 +285,7 @@ public class View extends JFrame {
             System.out.println("    CAST OF " + film.getTitle());
             System.out.println("=================================");
             System.out.println(servicer.displayActorsForAFilm(film.getFilmId()));
-            System.out.print("Press 0 to go back:");
+            System.out.print("Enter 0 to go back:");
             int actorChoice = scanner.nextInt();
             scanner.nextLine();
 
@@ -315,7 +326,7 @@ public class View extends JFrame {
                 System.out.println(film.toString());
             }
 
-            System.out.print("Choose actor by id (or go back == 0):");
+            System.out.print("Choose actor by id or enter 0 to go back:");
             int filmChoice = scanner.nextInt();
             scanner.nextLine();
 
@@ -353,7 +364,7 @@ public class View extends JFrame {
                 System.out.println(film.displayWatchedFilmInfo(progress));
             }
 
-            System.out.print("Choose film by id (or go back == 0):");
+            System.out.print("Choose film by id or enter 0 to go back:");
             int filmChoice = scanner.nextInt();
             scanner.nextLine();
 
