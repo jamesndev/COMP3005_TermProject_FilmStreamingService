@@ -66,7 +66,7 @@ public class Film {
 
     public boolean watch() {
         Random rand = new Random();
-        int timeWatched = rand.nextInt(30 - 10 + 1) + 10;
+        int timeWatched = rand.nextInt(50 - 20 + 1) + 20;
 
         watchedSoFar += timeWatched;
 

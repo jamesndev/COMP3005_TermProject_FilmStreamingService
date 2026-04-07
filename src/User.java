@@ -8,16 +8,14 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private int subscriptionId;
 
     private List<Film> watchedFilms;
 
-    public User(int userId, String username, String password, String email, int subscriptionId) {
+    public User(int userId, String username, String password, String email) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.subscriptionId = subscriptionId;
 
         watchedFilms = new ArrayList<>();
     }
@@ -90,9 +88,5 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setSubscriptionId(int subscription_id) {
-        this.subscriptionId = subscription_id;
     }
 }

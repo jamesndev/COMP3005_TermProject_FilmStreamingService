@@ -62,7 +62,6 @@ public class UserDAO {
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setEmail(rs.getString("email"));
-                user.setSubscriptionId(rs.getInt("subscription_id"));
 
                 return user;
             }
@@ -87,7 +86,6 @@ public class UserDAO {
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setEmail(rs.getString("email"));
-                user.setSubscriptionId(rs.getInt("subscription_id"));
 
                 users.add(user);
             }
