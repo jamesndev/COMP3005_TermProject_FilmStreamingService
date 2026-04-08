@@ -5,18 +5,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Actor Database Access Object that talks to the database and provides for the Servicer.
+ */
 public class ActorDAO {
 
+    /** Used for connection to database. **/
     private Connection conn;
 
+    /**
+     * Constructs an Actor DAO.
+     * @param conn Connection session
+     */
     public ActorDAO(Connection conn) {
         this.conn = conn;
     }
 
-    public void insertActor(Servicer model) {
-
-    }
-
+    /**
+     * Retrieves all actors from the 'actors' table in the database.
+     * @return All actors in the database
+     */
     public List<Actor> retrieveAllActors() {
         List<Actor> actors = new ArrayList<>();
 
@@ -41,6 +49,11 @@ public class ActorDAO {
         return actors;
     }
 
+    /**
+     * Retrieves an actor from the 'actor' table in the database by Actor ID.
+     * @param actorId Actor ID
+     * @return An actor with a specific actor ID
+     */
     public Actor retrieveActorByID(int actorId) {
 
         Actor actor = new Actor();
