@@ -6,14 +6,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Film User Database Access Object that talks to the film_user table in the database
+ * and provdes for the servicer.
+ */
 public class FilmUserDAO {
 
+    /** Used for connection to database. **/
     private Connection conn;
 
+    /**
+     * Constructs a FilmUserDAO.
+     * @param conn Connection session
+     */
     public FilmUserDAO(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Checks from 'film_user' database table if a user has watched a specific film.
+     * @param film Film
+     * @param user User
+     * @return True if a user and film pair exists in the film_user database table
+     */
     public boolean checkIfFilmWatched(Film film, User user) {
         String query = "SELECT 1 FROM film_user WHERE film_id = ? AND user_id = ?";
 
@@ -29,6 +44,11 @@ public class FilmUserDAO {
         return false;
     }
 
+    /**
+     * Insert a film into 'film_user' database table that a user has begun watching
+     * @param film Film
+     * @param user User
+     */
     public void insertWatchedFilm(Film film, User user) {
 
         if (checkIfFilmWatched(film, user)) {
@@ -50,6 +70,12 @@ public class FilmUserDAO {
         }
     }
 
+    /**
+     * Get all watched films from 'film_user' database table for a specific user
+     * @param userId User ID
+     * @param filmDAO FilmDAO
+     * @return Films from film_user database table watched by a specific user
+     */
     public List<Film> getWatchedFilms(int userId, FilmDAO filmDAO) {
         List<Film> watchedFilms = new ArrayList<>();
 
@@ -75,6 +101,12 @@ public class FilmUserDAO {
         return watchedFilms;
     }
 
+    /**
+     * Gets amount of film time from 'film_user' database table watched by a specific user.
+     * @param filmId Film ID
+     * @param userId User ID
+     * @return Watch progress from 'film_user' database table for a specific user
+     */
     public int getProgress(int filmId, int userId) {
         String query = "SELECT progress FROM film_user WHERE film_id = ? AND user_id = ?";
 
@@ -92,6 +124,11 @@ public class FilmUserDAO {
         return 0;
     }
 
+    /**
+     * Update watch time in 'film_user' database table for a specific user.
+     * @param film Film
+     * @param user User
+     */
     public void updateWatchTime(Film film, User user) {
         String query = "UPDATE film_user SET progress = ? WHERE film_id = ? AND user_id = ?";
 
@@ -106,21 +143,24 @@ public class FilmUserDAO {
         }
     }
 
+    /**
+     * Delete a watched film from 'film_user' database table for a specific user.
+     * @param film Film
+     * @param user User
+     * @return true watched film was deleted successfully, false otherwise
+     */
     public boolean deleteWatchedFilm(Film film, User user) {
 
-        String query = """
-        DELETE FROM film_user
-        WHERE film_id = ? AND user_id = ?
-    """;
+        String query = "DELETE FROM film_user WHERE film_id = ? AND user_id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, film.getFilmId());
             ps.setInt(2, user.getUserId());
 
-            int rowsAffected = ps.executeUpdate();
+            int rowsRemoved = ps.executeUpdate();
 
-            return rowsAffected > 0;
+            return rowsRemoved > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
