@@ -5,13 +5,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * User Database Access Object that talks to the 'users' table in the database and provides for the servicer.
+ */
 public class UserDAO {
+
+    /** Used for connection to database. **/
     private Connection conn;
 
+    /**
+     * Constructs a User DAO
+     * @param conn Connection session
+     */
     public UserDAO(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Check 'users' table in the database to see if an email exists.
+     * @param email Email
+     * @return True if the email exists in the users database table, false otherwise.
+     */
     public boolean emailExists(String email) {
         String sql = "SELECT 1 FROM users WHERE email = ?";
 
@@ -29,6 +43,10 @@ public class UserDAO {
         return false;
     }
 
+    /**
+     * Adds a user to the 'users' table in the database.
+     * @param user User to add
+     */
     public void addUser(User user) {
         String sql = "INSERT INTO users (email, username, password) VALUES (?, ?, ?)";
 
@@ -45,14 +63,16 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Retrieves a user from the 'users' table in the database based on email.
+     * @param email Email
+     * @return User from the users database table based on email
+     */
     public User retrieveUserByEmail(String email) {
-        List<Film> users = new ArrayList<>();
 
         String query = "SELECT * FROM users WHERE email = '" + email + "'";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            //stmt.setString(1, email);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -72,6 +92,10 @@ public class UserDAO {
         return null;
     }
 
+    /**
+     * Retrieves all users from the 'users' table in the database.
+     * @return All users from the users database table
+     */
     public List<User> retrieveAllUsers() {
         List<User> users = new ArrayList<>();
 
@@ -93,13 +117,5 @@ public class UserDAO {
             e.printStackTrace();
         }
         return users;
-    }
-
-    public void updateUser(Servicer model) {
-
-    }
-
-    public void deleteUser(Servicer model) {
-
     }
 }
