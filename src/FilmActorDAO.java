@@ -5,14 +5,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Film Actor Database Access Object that talks to the 'film_actor' table in the database
+ * and provides for the servicer.
+ */
 public class FilmActorDAO {
 
+    /** Used for connection to database. **/
     private Connection conn;
 
+    /**
+     * Constructs an Actor DAO.
+     * @param conn Connection session
+     */
     public FilmActorDAO(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Retrieves all films from film_actor that an actor has played in.
+     * @param actorId Actor ID
+     * @param filmDAO FilmDAO
+     * @return Films that an actor has played in
+     */
     public List<Film> retreiveFilmsForAnActor(int actorId, FilmDAO filmDAO) {
         List<Film> filmsOfActor = new ArrayList<>();
 
@@ -38,6 +53,12 @@ public class FilmActorDAO {
         return filmsOfActor;
     }
 
+    /**
+     * Retrieve all actors in film_actor that are in a film.
+     * @param filmId Film ID
+     * @param actorDAO ActorDAO
+     * @return Actors that are in a film
+     */
     public List<Actor> retreiveActorsForAFilm(int filmId, ActorDAO actorDAO) {
         List<Actor> actorsOfFilm = new ArrayList<>();
 
@@ -63,6 +84,12 @@ public class FilmActorDAO {
         return actorsOfFilm;
     }
 
+    /**
+     * Gets a character from film_actor that an actor plays in a specific film.
+     * @param filmId Film ID
+     * @param actorId Actor ID
+     * @return Character that an actor plays in a specific film.
+     */
     public String getCharacter(int filmId, int actorId) {
         String query = "SELECT character FROM film_actor WHERE film_id = ? AND actor_id = ?";
 
@@ -80,6 +107,12 @@ public class FilmActorDAO {
         return " ";
     }
 
+    /**
+     * Gets an actor's salary from film_actor for playing a role in a specific film.
+     * @param filmId Film ID
+     * @param actorId Actor ID
+     * @return Salary that an actor received for playing a role in a film
+     */
     public int getActorSalary(int filmId, int actorId) {
         String query = "SELECT actor_salary FROM film_actor WHERE film_id = ? AND actor_id = ?";
 
