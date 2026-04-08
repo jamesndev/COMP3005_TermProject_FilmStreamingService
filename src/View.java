@@ -8,16 +8,29 @@ import java.util.Scanner;
  */
 public class View extends JFrame {
 
+    /** Scanner for processing user input **/
     Scanner scanner;
+
+    /** Servicer for handling business logic and database access and servicing the view **/
     Servicer servicer;
 
+    /** Indicates if the user is returning from the browse film menu, to simplify menu flow **/
     boolean returnedFromBrowseFilmMenu = false;
 
+    /**
+     * Constructs a View.
+     * @param scanner Scanner
+     * @param servicer Servicer
+     */
     public View(Scanner scanner, Servicer servicer) {
         this.scanner = scanner;
         this.servicer = servicer;
     }
 
+    /**
+     * Main menu of the application.
+     * User chooses between logging in, registering an account, and quitting the application.
+     */
     private void showMainMenu() {
         while(true) {
             System.out.println();
@@ -42,6 +55,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Login menu of the application.
+     * User is asked to log in using existing user information and validates it.
+     */
     private void loginMenu() {
         while(true) {
             System.out.println();
@@ -84,6 +101,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Registration menu for the user to create an account with a UNIQUE email.
+     * Duplicate emails are not permitted.
+     */
     private void registerMenu() {
         while(true) {
             System.out.println();
@@ -129,6 +150,9 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for users to choose if they want to watch or browse films.
+     */
     private void watchedOrBrowseMenu() {
         while(true) {
             System.out.println();
@@ -156,13 +180,15 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for users to only browse films.
+     */
     public void browseMoviesMenu() {
         while(true) {
             System.out.println();
             System.out.println("=================================");
             System.out.println("        CHOOSE A FILM");
             System.out.println("=================================");
-            Film chosenFilm;
             int filmCount = 0;
             for(Film film: servicer.getAllFilms()) {
                 filmCount++;
@@ -187,6 +213,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for an individual film that a user chose.
+     * @param film Film
+     */
     public void individualFilmMenu(Film film) {
         while(true) {
             System.out.println();
@@ -220,6 +250,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for an individual WATCHED film that a user chose.
+     * @param film Film
+     */
     public void individualWatchedFilmMenu(Film film) {
         while(true) {
             System.out.println();
@@ -254,6 +288,9 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for an individual actor that a user chose.
+     */
     public void browseActorsMenu() {
         while(true) {
             System.out.println();
@@ -282,6 +319,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for a cast of a film.
+     * @param film Film
+     */
     public void browseCastForAFilmMenu(Film film) {
         while(true) {
             System.out.println();
@@ -301,6 +342,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for an individual actor that the user chose.
+     * @param actor Actor
+     */
     public void individualActorMenu(Actor actor) {
         while(true) {
             System.out.println();
@@ -324,6 +369,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for user to browse films that a single actor plays in.
+     * @param actorId Actor ID
+     */
     public void browseActorFilms(int actorId) {
         while(true) {
             for(Film film: servicer.getActor(actorId).getFilmsIn()) {
@@ -349,6 +398,9 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Menu for a user to browse recently watched films.
+     */
     public void recentlyWatchedMenu() {
         while(true) {
             System.out.println();
@@ -386,6 +438,10 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Display for simulating a user watching a film.
+     * @param film Film
+     */
     public void watchMovie(Film film) {
         System.out.println("Watching movie...");
         int amountWatched = servicer.watchFilm(film, servicer.getCurrentUser());
@@ -401,11 +457,18 @@ public class View extends JFrame {
         servicer.loadWatchedFilmsForCurrentUser();
     }
 
+    /**
+     * Exists the application.
+     */
     private void exit() {
         System.out.println("Exiting the Film Streaming Service!");
         System.exit(0);
     }
 
+    /**
+     * Starting point of the application.
+     * Initializes a scanner that the servicer uses.
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Servicer servicer = new Servicer();
