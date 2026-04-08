@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Actor Database Access Object that talks to the database and provides for the Servicer.
+ * Actor Database Access Object that talks to the 'actors' table in the database and provides for the servicer.
  */
 public class ActorDAO {
 
