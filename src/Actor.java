@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents an Actor that can be in films.
+ * Represents an actor that can be in films.
  * An actor can be in many films, a film can have many actors.
  */
 public class Actor {
