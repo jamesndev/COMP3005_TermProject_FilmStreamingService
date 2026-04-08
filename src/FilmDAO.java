@@ -5,14 +5,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Film Database Access Object that talks to the 'film' table in the database
+ * and provides for the servicer.
+ */
 public class FilmDAO {
 
+    /** Used for connection to database. **/
     private Connection conn;
 
+    /**
+     * Constructs a FilmDAO.
+     * @param conn Connection session
+     */
     public FilmDAO(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Retrieves all films from the 'films' table in the database.
+     * @return All films from films database table
+     */
     public List<Film> retrieveAllFilms() {
         List<Film> films = new ArrayList<>();
 
@@ -38,6 +51,11 @@ public class FilmDAO {
         return films;
     }
 
+    /**
+     * Retrieves a film from the 'film's table in the database with a specified film ID.
+     * @param filmId Film ID
+     * @return Film with specified film ID
+     */
     public Film retrieveFilmByID(int filmId) {
 
         Film film = new Film();
@@ -59,10 +77,4 @@ public class FilmDAO {
         return film;
 
     }
-
-    public void deleteFilm(Servicer model) {
-
-    }
-
-
 }
